@@ -19,14 +19,14 @@ def mat_to_numpy(mat:cv2.Mat)->np.ndarray:
     np.asarray(mat)
 
 
-"""_summary_
+"""
 @param img_mat 输入一个cv2.mat   
 @return  返回数组，储存灰度值的像素个数的
 
 """
 def count_pixel(img_mat:cv2.Mat)->cv2.Mat:
     
-    img_mat_grey=mat_to_gray_mat(img_mat)
+    img_mat_grey=cvtcolor2gray(img_mat)
     img_tensor:torch.Tensor = mat_to_tensor(img_mat_grey)
     gray_value_list:list = [0 for i in range(256)]
     _,h,w=img_tensor.shape
@@ -39,9 +39,12 @@ def count_pixel(img_mat:cv2.Mat)->cv2.Mat:
     return gray_value_list
     
 
-
-def draw_line(arr:list,img_size=(600,800),start_point:tuple=(10,570),line_color=(255,0,0),thickness:int=3):
-    
+"""
+@param 传入一个数组，长度是256
+@return 返回灰度直方图
+"""
+def to_gray_histogram (arr:list,img_size=(600,800),line_color=(255,0,0),thickness:int=3)->cv2.Mat:
+    start_point:tuple=(15,img_size[0]-30)
     max=np.max(arr)
     ratio=max/(start_point[1]*0.9)
     narr=np.zeros(img_size,np.uint8)
@@ -57,7 +60,7 @@ def draw_line(arr:list,img_size=(600,800),start_point:tuple=(10,570),line_color=
     return mat
 
 
-def mat_to_gray_mat(img_mat:cv2.Mat)->cv2.Mat:
+def cvtcolor2gray(img_mat:cv2.Mat)->cv2.Mat:
     
     if len(img_mat.shape)==3:
         return cv2.cvtColor(img_mat,cv2.COLOR_BGR2GRAY)
