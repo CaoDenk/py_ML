@@ -1,5 +1,5 @@
 import torchvision.transforms as transforms
-from PIL import Image
+from PIL import ImageFont, ImageDraw, Image
 import torch
 import cv2
 import numpy as np
@@ -16,7 +16,8 @@ def mat_to_tensor(mat:cv2.Mat)->torch.Tensor:
     return transform(mat)
 
 def mat_to_numpy(mat:cv2.Mat)->np.ndarray:
-    np.asarray(mat)
+    return np.asarray(mat)
+    
 
 
 """
@@ -40,7 +41,7 @@ def count_pixel(img_mat:cv2.Mat)->cv2.Mat:
     
 
 """
-@param 传入一个数组，长度是256
+@param 传入一个数组,长度是256
 @return 返回灰度直方图
 """
 def to_gray_histogram (arr:list,img_size=(600,800),line_color=(255,0,0),thickness:int=3)->cv2.Mat:
@@ -69,7 +70,99 @@ def cvtcolor2gray(img_mat:cv2.Mat)->cv2.Mat:
 
 
 
+"""
+
+@link= https://stackoverflow.com/questions/50854235/how-to-draw-chinese-text-on-the-image-using-cv2-puttextcorrectly-pythonopen
+"""
+def mat_merge_with_labels(mats,lables,allignment_type):
+   
+    height,width,channels=mats[0].shape
+    count=len(mats)
+    mat_lists=[]
+    for i in range(len(mats)):
+        # n=np.zeros((50,width,channels),np.uint8)
+        label_header=create_mat((40,width),channels=channels)
+        # mat_with_label=cv2.putText(label_header,lables[i],(10,20),cv2.FONT_HERSHEY_TRIPLEX,1,(255,255,255))
+        img_n=mat_to_numpy(mats[i])
+        img=np.concatenate([label_header,img_n])
+        
+        fontpath = "simsun.ttc" # <== 这里是宋体路径 
+        font = ImageFont.truetype(fontpath, 32)
+        img_pil = Image.fromarray(img)
+        draw = ImageDraw.Draw(img_pil)
+        draw.text((0, 0),  lables[i], font = font, fill = ( 0,0,0,0))
+        img = np.array(img_pil)
+
+        # cv2.imshow(str(i),img)
+        
+        mat_lists.append(img)
+    
+    #储存返回的大图
+    ret=[]
+    
+    allign_height,allign_width=allignment_type
+    # count=len(mats)
+    for i in  range(allign_height):        
+        
+        if (final_count:=count-i*allign_width) >=allign_width:          
+            mat_concat=cv2.hconcat( mat_lists[i*allign_width:i*allign_width+allign_width])
+            ret.append(mat_concat)
+        else:
+            # for k in range(leaveout:=v_len-final_count):
+            leaveout=allign_width-final_count
+            _height = mat_lists[0].shape[0]
+            white_mat=create_mat((_height,width*leaveout),channels=channels)
+                         
+            tmp=cv2.hconcat( mat_lists[i*allign_width:i*allign_width+final_count])
+            final_line_mat=cv2.hconcat([tmp,white_mat])
+            ret.append(final_line_mat)
+    return cv2.vconcat(ret)
+           
+        #     ...
+        # mat_count_per_line=(count-i*h_len)//h_len
+        # for j in range(mat_count_per_line):
+        #     ...
+        # vmat=cv2.vconcat([mat_with_label,mats[0]])
+        # # mat_n=mat_to_numpy(mats[i])
+        # mat_lists.append(vmat)
+        
+        # cv2.imshow(str(i),vmat)
+        # merge_n=np.concatenate([n,mat_n])
+        # # print(merge_n.shape)
+        # # print(mat_n.shape)
+        # mat=cv2.Mat(merge_n)
+        # mat_with_label=cv2.putText(mat,lables[i],(50,50),cv2.FONT_HERSHEY_SIMPLEX,0.4,(255,255,255))
+        # cv2.imshow(str(i),mat_with_label)
+
+
+
+# def get_mat_from_matlists(mat,i,j):
+#     ...
+    
+"""
+@return 返回一个大小为size的cv::Mat 
+
+def create_mat(size:tuple)->cv2.Mat:
+    matArr_with_zeros=np.zeros(size,np.uint8)
+    return cv2.Mat(matArr_with_zeros)
+
+"""
+
+def create_mat(size,channels):
+    if channels==1:
+        n =np.zeros(size,dtype='uint8')
+        return cv2.Mat(n)
+    elif channels==3:
+        l=[]
+        for i in range(3):
+            l.append(np.ones(size,dtype='uint8')*255)          
+        return cv2.merge(l)
+    else:
+        raise Exception("channels must be 1 or 3")
 
     
 
+
+# def put_mat(mat,shape,):
+    
 
