@@ -12,6 +12,7 @@ class TransformerSelfAttentionLayer(nn.Mudule):
         # self.self_attn=  #多头自注意
         self.self_attn=MultiheadAttentionRelative(hidden_dim,nhead)
         self.norm1 = nn.LayerNorm(hidden_dim)
+        s
         
         
         
