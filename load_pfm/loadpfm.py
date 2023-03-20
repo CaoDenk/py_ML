@@ -14,7 +14,7 @@ import cv2
 
 file=r"E:\Dataset\Compressed\Sampler.tar\Sampler\FlyingThings3D\disparity\0007.pfm"
 
-mat=cv2.imreadmulti(file)
+mat=cv2.imreadmulti(file,)
 
 print(mat)
 # cv2.imshow("pfm",mat)
