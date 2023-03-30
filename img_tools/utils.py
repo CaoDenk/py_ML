@@ -1,3 +1,5 @@
+import torch
+from matplotlib import pyplot as plt
 import torchvision.transforms as transforms
 from PIL import ImageFont, ImageDraw, Image
 import torch
@@ -6,9 +8,39 @@ import numpy as np
 import torch
 
 
-def Image_to_tensor(img:Image)->torch.tensor:
-    transform = transforms.ToTensor()
-    return transform(img)
+def plot_image(image, lable, title):
+    
+    fig=plt.figure()
+    for i in range(6):
+        fig.add_subplot(2,3,i+1)
+        plt.tight_layout()
+        plt.imshow(image[i][0]*0.3081+0.1307, cmap='gray',interpolation='none')
+        plt.title("{}:{}".format(title,lable[i].item()))
+        plt.xticks([])
+        plt.yticks([])
+    plt.show()
+
+def plot_curve(data):
+    fig=plt.figure()
+    fig.plot(range(len(data)),data,color='blue')
+    plt.legend('step')
+    plt.xlabel('step')
+    plt.ylabel('value') 
+    plt.show()
+
+def one_hot(lable,depth=10):
+    out=torch.zeros(lable.size(0),depth)
+    idex=torch.LongTensor(lable).view(-1,1)
+    out.scatter_(dim=1,index=idex,value=1)
+    return out
+
+
+def Image_to_tensor(img:cv2.Mat)->torch.tensor:
+    image_np = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    image_np = np.transpose(image_np, (2, 0, 1))
+
+    return torch.from_numpy(image_np).float()
+    
 
 
 def mat_to_tensor(mat:cv2.Mat)->torch.Tensor:
@@ -117,28 +149,8 @@ def mat_merge_with_labels(mats,lables,allignment_type):
             final_line_mat=cv2.hconcat([tmp,white_mat])
             ret.append(final_line_mat)
     return cv2.vconcat(ret)
-           
-        #     ...
-        # mat_count_per_line=(count-i*h_len)//h_len
-        # for j in range(mat_count_per_line):
-        #     ...
-        # vmat=cv2.vconcat([mat_with_label,mats[0]])
-        # # mat_n=mat_to_numpy(mats[i])
-        # mat_lists.append(vmat)
-        
-        # cv2.imshow(str(i),vmat)
-        # merge_n=np.concatenate([n,mat_n])
-        # # print(merge_n.shape)
-        # # print(mat_n.shape)
-        # mat=cv2.Mat(merge_n)
-        # mat_with_label=cv2.putText(mat,lables[i],(50,50),cv2.FONT_HERSHEY_SIMPLEX,0.4,(255,255,255))
-        # cv2.imshow(str(i),mat_with_label)
 
 
-
-# def get_mat_from_matlists(mat,i,j):
-#     ...
-    
 """
 @return 返回一个大小为size的cv::Mat 
 
@@ -160,9 +172,11 @@ def create_mat(size,channels):
     else:
         raise Exception("channels must be 1 or 3")
 
-    
 
 
-# def put_mat(mat,shape,):
-    
-
+# def get_histogram_from_str(img_path:str)->cv2.Mat:
+#     graypixel_list=utils.count_pixel(cv2.imread(img_path))
+#     return utils.to_histogram(graypixel_list)
+# def get_histogram_from_mat(img_mat:cv2.Mat)->cv2.Mat:
+#     graypixel_list=utils.count_pixel(img_mat)
+#     return utils.to_histogram(graypixel_list)

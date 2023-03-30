@@ -18,15 +18,6 @@ def read_pfm(filename):
 
         buffer = pfm_file.read()
         
-        
-        # j=0
-        # for i in buffer:
-        #     if j>100:
-        #         break
-        #     print(i)
-        #     j+=1
-
-        
         samples = width * height * channels
         assert len(buffer) == samples * 4
         
