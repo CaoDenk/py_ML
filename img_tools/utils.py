@@ -1,3 +1,4 @@
+import PIL
 import torch
 from matplotlib import pyplot as plt
 import torchvision.transforms as transforms
@@ -35,7 +36,7 @@ def one_hot(lable,depth=10):
     return out
 
 
-def Image_to_tensor(img:cv2.Mat)->torch.tensor:
+def mat_to_tensor(img:cv2.Mat)->torch.tensor:
     image_np = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     image_np = np.transpose(image_np, (2, 0, 1))
 
@@ -43,9 +44,9 @@ def Image_to_tensor(img:cv2.Mat)->torch.tensor:
     
 
 
-def mat_to_tensor(mat:cv2.Mat)->torch.Tensor:
+def Image_to_tensor(img:PIL.Image)->torch.Tensor:
     transform = transforms.ToTensor()
-    return transform(mat)
+    return transform(img)
 
 def mat_to_numpy(mat:cv2.Mat)->np.ndarray:
     return np.asarray(mat)
