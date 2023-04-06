@@ -2,6 +2,7 @@ import os
 import cv2
 import torch
 from torch.utils import data
+from torch.utils.data.dataloader import DataLoader
 import torchvision.transforms as transforms
 
 from PIL import Image
@@ -29,7 +30,12 @@ class InstrumentSegDataset(data.Dataset):
         img_mat = Image.open(f"{self.img_dir}/{self.imgs[index]}")
         img_mask_mat = Image.open(f"{self.img_mask_dir}/{mask_img}")
 
-        return img_mat,img_mask_mat
+        img_mat=img_mat.resize((576,576))
+        img_mask_mat=img_mask_mat.resize((576,576))
+        img_mask_mat=img_mask_mat.convert("1")
+        
+        return {"img":transforms.ToTensor()(img_mat),"mask":transforms.ToTensor()(img_mask_mat)}
+        # return img_mat,img_mask_mat
 
 
 
@@ -43,3 +49,12 @@ def get_dataset(img_dir,img_mask_dir):
     return dataset
 
 
+# img_dir=r"E:\Dataset\Img_seg\images"
+# img_mask_dir=r"E:\Dataset\Img_seg\masks"
+
+# dataset= get_dataset(img_dir,img_mask_dir)
+
+# dataloader=DataLoader(dataset=dataset,batch_size=2)
+# for idex in  dataloader:
+#     print(type(idex["img"]),idex["img"].shape)
+#     break

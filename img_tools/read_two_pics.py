@@ -1,5 +1,6 @@
 import cv2
-from utils.myutils import mat_to_tensor
+from img_tools.utils import mat_to_tensor
+
 pic_dir:str = r"E:\Dataset\dataset\rectified08-003\rectified08"
 pic_left:str =rf"{pic_dir}\image01\0000000000.jpg"
 pic_right:str =rf"{pic_dir}\image02\0000000000.jpg"

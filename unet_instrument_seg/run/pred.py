@@ -18,9 +18,9 @@ def img_to_tensor(img)->torch.Tensor:
     return transform(img)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-u=torch.load("u.pth")
+u=torch.load(r"E:\Dataset\图像分割\u2.pth")
 # print(type(u))
-img=Image.open(r"E:\Dataset\ImageMatching\dataset\mesad-real\mesad-real\train\images\real1_frame_1074.jpg")
+img=Image.open(r"E:\Dataset\ImageMatching\dataset\mesad-real\mesad-real\train\images\real1_frame_888.jpg")
 
 img_u=img.resize((572,572))    
             
