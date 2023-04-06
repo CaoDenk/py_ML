@@ -181,3 +181,8 @@ def create_mat(size,channels):
 # def get_histogram_from_mat(img_mat:cv2.Mat)->cv2.Mat:
 #     graypixel_list=utils.count_pixel(img_mat)
 #     return utils.to_histogram(graypixel_list)
+
+
+# def match_img(img1,img2):
+#     Image.merge(img1,img2)
+
