@@ -13,19 +13,16 @@ _load_module("module")
 from dataset import get_dataset
 from Unet import Unet
 
-def img_to_tensor(img)->torch.Tensor:
-    transform = transforms.ToTensor()
-    return transform(img)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-u=torch.load(r"E:\Dataset\图像分割\u2.pth")
+u=torch.load(r"E:\Dataset\Img_seg\u.pth")
 # print(type(u))
-img=Image.open(r"E:\Dataset\ImageMatching\dataset\mesad-real\mesad-real\train\images\real1_frame_888.jpg")
+img=Image.open(r"E:\Dataset\ImageMatching\dataset\mesad-real\mesad-real\train\images\real1_frame_2000.jpg")
 
 img_u=img.resize((572,572))    
             
             
-img_tensor=img_to_tensor(img_u)
+img_tensor=transforms.ToTensor()(img_u)
 input=img_tensor.unsqueeze(0)
 input=input.to(device=device,dtype=torch.float32)
 
