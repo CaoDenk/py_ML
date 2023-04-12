@@ -41,13 +41,13 @@ class UpSample(nn.Module):
         self.up_conv1=nn.Sequential(
             nn.Conv2d(1024,1024,3,1,1),
             # nn.ReLU(),
-            nn.LeakyReLU(0.2),
+            nn.Tanh(),
             
             nn.Upsample(scale_factor=2.0,mode="bilinear"),  
             nn.Conv2d(1024,512,2,1,1),
             # nn.ReLU(),
             
-            nn.LeakyReLU(0.2),
+            nn.Tanh(),
             
         )
         self.up_conv2=up_block(1024,512,256)
@@ -58,14 +58,14 @@ class UpSample(nn.Module):
         self.final_layer=nn.Sequential(
             nn.Conv2d(128,64,3,1,1),
             # nn.ReLU(),
-            nn.LeakyReLU(0.2),
+           nn.Tanh(),
             nn.Conv2d(64,64,3,1,1),
             # nn.ReLU(),
-            nn.LeakyReLU(0.2),
+             nn.Tanh(),
             # nn.Conv2d(64,1,1,1,1),
             # nn.ReLU(),           
-            nn.Conv2d(64,1,3,1,1),
-            # nn.ReLU()
+            nn.Conv2d(64,1,1,1,0),
+
         )
 
         # self.concat

@@ -37,7 +37,7 @@ class DownSample(nn.Module):
         # 输入n*3*572*572
     def forward(self,x): 
         
-        conv_out1=self.conv1(x)  #conv_out n*64*572*572 omit n* followed
+        conv_out1=self.conv1(x)  #conv_out n*64*572*572 
         pool_out1=self.first_pool(conv_out1) #pool_out  64*286*286
         # print_shape(pool_out1)
         
@@ -62,7 +62,6 @@ class DownSample(nn.Module):
 
 
 
-# print(t.shape)
         
 
         

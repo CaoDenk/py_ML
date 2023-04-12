@@ -9,11 +9,12 @@ class ConvBlock(nn.Module):
             nn.BatchNorm2d(num_features=out_channles),
             # nn.ReLU(inplace=True),
             # nn.Sigmoid(),
-            nn.LeakyReLU(0.2),
+            # nn.LeakyReLU(0.2),
+            nn.Tanh(),
             nn.Conv2d(in_channels=out_channles,out_channels=out_channles,kernel_size=3,stride=1,padding=1),
             nn.BatchNorm2d(num_features=out_channles),
             # nn.ReLU(inplace=True)
-             nn.LeakyReLU(0.2),
+            nn.Tanh(),
         )
         """
         h==w  is required

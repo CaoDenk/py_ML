@@ -49,11 +49,12 @@ class Unet_test(nn.Module):
     
 
 
-t=torch.rand(size=(1,3,572,572),dtype=torch.float32)
+if __name__ =='__main__':
+    t=torch.rand(size=(1,3,572,572),dtype=torch.float32)
 
-u=Unet_test()
-t=u(t)
-print(t.shape)
+    u=Unet_test()
+    t=u(t)
+    print(t.shape)
         
         
         
