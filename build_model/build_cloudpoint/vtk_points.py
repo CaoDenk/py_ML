@@ -1,5 +1,6 @@
 import vtk
 import cv2
+from rgbd_to_pointcloud import save_pos
 from camera_args import load_camera_args
 from load_img import get_img_and_depth
 from rgbd_to_pointcloud import rgbd_to_pointcloud
@@ -11,11 +12,11 @@ if __name__=='__main__':
     dataset_no=22
     intrinsics_t,extrinsics_t=load_camera_args(dir,dataset_no=dataset_no)
     
-    img_bgr,depth=get_img_and_depth(dir,dataset_no,1,"0000000000.jpg")
+    img_bgr,depth=get_img_and_depth(dir,dataset_no,1,"0000000012.jpg")
     
     
     pointcloud,rgb_collections=rgbd_to_pointcloud(img_bgr,depth,intrinsics_t,extrinsics_t)
-    
+    save_pos(pointcloud,"python_pos.txt")
     cv2.imshow("img",img_bgr)
     vtk_show_points(pointcloud,rgb_collections,True)
    

@@ -36,7 +36,7 @@ def rgbd_to_pointcloud(img_bgr:cv2.Mat,depth:cv2.Mat,camera_intrinsics:torch.Ten
 
     h,w=depth.shape
     r=camera_extrinsics[:,:-1] # 3*3 旋转矩阵
-    t=camera_extrinsics[:,-2:-1] #3*1 平移矩阵
+    t=camera_extrinsics[:,-1:] #3*1 平移矩阵
     
     pointcloud=[]
     rgb_collections=[]
@@ -51,10 +51,8 @@ def rgbd_to_pointcloud(img_bgr:cv2.Mat,depth:cv2.Mat,camera_intrinsics:torch.Ten
             yc=(j-camera_intrinsics[1,2])*d/camera_intrinsics[1,1]
             dc=d
             tpos=torch.Tensor([[xc],[yc],[dc]])
-
             pos3d=r.matmul(tpos)+t
             pointcloud.append(pos3d.view(-1))
-
             red=img_bgr[i,j,2]
             green=img_bgr[i,j,1]
             blue=img_bgr[i,j,0]
@@ -78,3 +76,7 @@ def rgbd_to_pointcloud(img_bgr:cv2.Mat,depth:cv2.Mat,camera_intrinsics:torch.Ten
 #     vtk_show_points(l,rgb_colls)
 #     cv2.waitKey()
 #     # save_point(l,"test.points")
+def save_pos(pos_list,file_name):
+    with open(file_name,"w") as f:
+        for i in pos_list:
+            f.writelines(f"{i[0]},{i[1]},{i[2]}\n")
