@@ -15,7 +15,7 @@ from Unet import Unet
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-u=torch.load(r"E:\Dataset\Img_seg\u4.pth")
+u=torch.load(r"E:\Dataset\Img_seg\u2.pth")
 # print(type(u))
 img=Image.open(r"E:\Dataset\Img_seg\images\ckcuhathy000y3b5yztf7bt9k.jpg")
 

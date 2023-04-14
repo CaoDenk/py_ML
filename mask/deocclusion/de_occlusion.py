@@ -9,8 +9,7 @@ def de_occ(img,mask):
     imgrgba=Image.open(img).convert("RGBA")
     imgmask=Image.open(mask).convert("1")
     
-    
-    
+       
     h,w=imgmask.size
     
 
@@ -31,10 +30,6 @@ def de_occ(img,mask):
     
     # imgmask.show()
     
-
-
-
-
 
 """
 tensor的值默认范围就是(0,1),挖个坑

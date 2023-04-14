@@ -11,7 +11,7 @@ if __name__=='__main__':
     narr=np.asarray(mat)
     min_val = np.min(narr)
     max_val = np.max(narr)
-    normalized_matrix = 255*(narr - min_val) / (max_val - min_val)
+    normalized_matrix =255- 255*(narr - min_val) / (max_val - min_val)
 
     img=Image.fromarray(normalized_matrix)
     img.show()

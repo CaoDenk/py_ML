@@ -1,21 +1,23 @@
 from typing import List
 import vtk
 import torch
+from rgbd_to_pointcloud import rgbd_to_pointcloud
+from load_img import get_img_and_depth
 
-def vtk_show_points(l:List[torch.tensor],rgb_colls):
+from camera_args import load_camera_args
+
+def vtk_show_points(l,rgb_colls,is_same_to_img:bool):
     
     points = vtk.vtkPoints()
-    # points.InsertNextPoint(0.0, 0.0, 0.0)
-    # points.InsertNextPoint(1.5, 2.0, 3.0)
-    # points.InsertNextPoint(-2.0, 1.5, 4.5)
-    for i in l:
-        points.InsertNextPoint(i[0],i[1],i[2])
+    if is_same_to_img:       
+        for i in l:
+            points.InsertNextPoint(i[1],i[0],i[2])
+           
+    else:
+        for i in l:
+            points.InsertNextPoint(i[0],i[1],i[2])
     colors = vtk.vtkUnsignedCharArray()
     colors.SetNumberOfComponents(3)
-    # colors.InsertNextTuple3(255, 0, 0)
-    # colors.InsertNextTuple3(0, 255, 0)
-    # colors.InsertNextTuple3(0, 0, 255)
-    # colors.InsertNextTuple3(255, 255, 0)
     for r in rgb_colls:
         colors.InsertNextTuple3(r[0],r[1],r[2])
     # 创建vtkPolyData对象，并设置其点集和颜色为上面创建的vtkPoints对象和vtkUnsignedCharArray对象
@@ -52,3 +54,5 @@ def vtk_show_points(l:List[torch.tensor],rgb_colls):
     interactor.Initialize()
     render_window.Render()
     interactor.Start()
+    
+    
