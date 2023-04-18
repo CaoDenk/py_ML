@@ -15,9 +15,9 @@ from Unet import Unet
 
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-u=torch.load(r"E:\Dataset\Img_seg\u2.pth")
+u=torch.load(r"E:\Dataset\Img_seg\u.pth")
 # print(type(u))
-img=Image.open(r"E:\Dataset\Img_seg\images\ckcuhathy000y3b5yztf7bt9k.jpg")
+img=Image.open(r"E:\Dataset\Img_seg\make_dataset\mesad-real\mesad-real\train\images\real1_frame_695.jpg")
 
 img_u=img.resize((572,572))    
             

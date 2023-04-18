@@ -38,14 +38,43 @@ class InstrumentSegDataset(data.Dataset):
         # return img_mat,img_mask_mat
 
 
-
-
-def get_dataset(img_dir,img_mask_dir):
+class SegmentDataset(data.Dataset):
     
-    imgs=os.listdir(img_dir)
+    def __init__(self,img_dir,img_mask_dir,img_masks) -> None:
+        # super().__init__()
+        self.img_dir=img_dir
+        self.img_mask_dir=img_mask_dir
+        self.img_masks=img_masks
+        
+    def __len__(self):
+        return len(self.img_masks)
+    
+    
+    def __getitem__(self,index):
+        # img_mat=cv2.imread(f"{self.img_dir}/{self.imgs[index]}")
+        # img_mask_mat=cv2.imread(f"{self.img_mask_dir}/{self.imgs[index]}")
+        # mask_img=self.imgs[index].replace("jpg","png")
+        # img=self.img_masks[index][:-3]+"jpg"
+        # img=f"{self.img_dir/self.img_masks[index]}"
+        img_mat = Image.open(f"{self.img_dir}/{self.img_masks[index]}")
+        img_mask_mat = Image.open(f"{self.img_mask_dir}/{self.img_masks[index]}")
+
+        img_mat=img_mat.resize((576,576))
+        img_mask_mat=img_mask_mat.resize((576,576))
+        img_mask_mat=img_mask_mat.convert("1")
+        
+        return {"img":transforms.ToTensor()(img_mat),"mask":transforms.ToTensor()(img_mask_mat)}
+
+def get_dataset(img_dir,img_mask_dir,dataset_no=0):
+    
+    dataset=None
+    if dataset_no==0:
+        imgs=os.listdir(img_dir)
     # assert(len(imgs)>0)    
-    dataset = InstrumentSegDataset(img_dir=img_dir,img_mask_dir=img_mask_dir,imgs=imgs)
-    
+        dataset = InstrumentSegDataset(img_dir=img_dir,img_mask_dir=img_mask_dir,imgs=imgs)   
+    elif  dataset_no==1:
+        img_masks=os.listdir(img_mask_dir)
+        dataset=SegmentDataset(img_dir,img_mask_dir,img_masks)
     return dataset
 
 
@@ -58,3 +87,14 @@ def get_dataset(img_dir,img_mask_dir):
 # for idex in  dataloader:
 #     print(type(idex["img"]),idex["img"].shape)
 #     break
+
+
+
+# mask -> img
+# 数据集 mesad-real
+
+if __name__ =='__main__':
+    img_dir=r"E:\Dataset\Img_seg\make_dataset\mesad-real\mesad-real\train\images"
+    img_mask_dir=r"E:\Dataset\Img_seg\make_dataset\mask"
+    dataset= get_dataset(img_dir,img_mask_dir,1)
+    

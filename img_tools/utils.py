@@ -185,4 +185,10 @@ def create_mat(size,channels):
 
 # def match_img(img1,img2):
 #     Image.merge(img1,img2)
-
+""""
+@return 返回一个掩膜后的cv.Mat
+@param 
+    img:torch.Tensor
+"""
+def do_mask(img:torch.Tensor,mask:torch.Tensor)->cv2.Mat:
+    ...
