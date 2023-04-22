@@ -61,14 +61,12 @@ class UpSample(nn.Module):
            nn.Tanh(),
             nn.Conv2d(64,64,3,1,1),
             # nn.ReLU(),
-             nn.Tanh(),
+            nn.Tanh(),
             # nn.Conv2d(64,1,1,1,1),
             # nn.ReLU(),           
-            nn.Conv2d(64,1,1,1,0),
-
+            nn.Conv2d(64,1,3,1,1),
         )
 
-        # self.concat
         
         # x5 1024*35*35
         #x4  512*71*71

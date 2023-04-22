@@ -11,6 +11,7 @@ def vtk_show_points(l,rgb_colls,is_same_to_img:bool):
     points = vtk.vtkPoints()
     if is_same_to_img:       
         for i in l:
+            print(type(i),type(i[0]))
             points.InsertNextPoint(i[1],i[0],i[2])
            
     else:

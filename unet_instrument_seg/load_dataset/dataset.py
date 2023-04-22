@@ -30,8 +30,8 @@ class InstrumentSegDataset(data.Dataset):
         img_mat = Image.open(f"{self.img_dir}/{self.imgs[index]}")
         img_mask_mat = Image.open(f"{self.img_mask_dir}/{mask_img}")
 
-        img_mat=img_mat.resize((576,576))
-        img_mask_mat=img_mask_mat.resize((576,576))
+        # img_mat=img_mat.resize((576,576))
+        # img_mask_mat=img_mask_mat.resize((576,576))
         img_mask_mat=img_mask_mat.convert("1")
         
         return {"img":transforms.ToTensor()(img_mat),"mask":transforms.ToTensor()(img_mask_mat)}
@@ -51,16 +51,10 @@ class SegmentDataset(data.Dataset):
     
     
     def __getitem__(self,index):
-        # img_mat=cv2.imread(f"{self.img_dir}/{self.imgs[index]}")
-        # img_mask_mat=cv2.imread(f"{self.img_mask_dir}/{self.imgs[index]}")
-        # mask_img=self.imgs[index].replace("jpg","png")
-        # img=self.img_masks[index][:-3]+"jpg"
-        # img=f"{self.img_dir/self.img_masks[index]}"
+
         img_mat = Image.open(f"{self.img_dir}/{self.img_masks[index]}")
         img_mask_mat = Image.open(f"{self.img_mask_dir}/{self.img_masks[index]}")
-
-        img_mat=img_mat.resize((576,576))
-        img_mask_mat=img_mask_mat.resize((576,576))
+        
         img_mask_mat=img_mask_mat.convert("1")
         
         return {"img":transforms.ToTensor()(img_mat),"mask":transforms.ToTensor()(img_mask_mat)}
@@ -94,7 +88,7 @@ def get_dataset(img_dir,img_mask_dir,dataset_no=0):
 # 数据集 mesad-real
 
 if __name__ =='__main__':
-    img_dir=r"E:\Dataset\Img_seg\make_dataset\mesad-real\mesad-real\train\images"
+    img_dir=r"E:\Dataset\Matching_Reconstruction\Endovis 2017\train\instrument_1_4_training\instrument_dataset_1\left_frames"
     img_mask_dir=r"E:\Dataset\Img_seg\make_dataset\mask"
     dataset= get_dataset(img_dir,img_mask_dir,1)
     

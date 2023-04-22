@@ -19,6 +19,8 @@ def load_camera_args(dirpath,dataset_no):
                 l=[]
                 for n in arr:
                     l.append(float(n))
+                    if len(l)>=3:
+                        break
                 intrinsics.append(l)
     with open(extrinsics_path,"r")  as f:
             

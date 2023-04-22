@@ -31,7 +31,8 @@ def train(img_dir,img_mask_dir,epoch,device,net,batch_size=1):
     net.to(device=device)
 
     # u.to(dev)
-    optimizer = optim.RMSprop(net.parameters(), lr=0.00001, weight_decay=1e-8, momentum=0.9)
+    # optimizer = optim.RMSprop(net.parameters(), lr=0.00001, weight_decay=1e-8, momentum=0.9)
+    optimizer=torch.optim.Adam(net.parameters(),lr=0.00001)
     criterion = nn.BCEWithLogitsLoss()
     for i in range(epoch):
         net.train()
@@ -69,7 +70,7 @@ if __name__=='__main__':
         net=Unet()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     try:
-        train(img_dir=img_dir,img_mask_dir=img_mask_dir,epoch=5,device=device,net=net,batch_size=1)
+        train(img_dir=img_dir,img_mask_dir=img_mask_dir,epoch=20,device=device,net=net,batch_size=1)
     except Exception as e:
         print(e.args) 
         print("interrupt ,model has been saved")

@@ -21,20 +21,12 @@ def load_config():
     config.read(config_path)
 
     # 获取配置值
-    db_host = config.get('database', 'host')
-    db_port = config.getint('database', 'port')
-    db_name = config.get('database', 'name')
-    db_user = config.get('database', 'username')
-    db_pass = config.get('database', 'password')
-    file = config.get('database', 'file')
+
+    file = config.get('img_seg', 'file')
 
     # 输出配置值
-    print(f'Database host: {db_host}')
-    print(f'Database port: {db_port}')
-    print(f'Database name: {db_name}')
-    print(f'Database user: {db_user}')
-    print(f'Database password: {db_pass}')   
-    print(f'Database password: {file}')   
+
+    print(f'file: {file}')   
     
 load_config()
 # print(__file__)

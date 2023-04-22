@@ -27,7 +27,7 @@ class Unet(nn.Module):
         
 if __name__ =='__main__':
     u=Unet()
-    summary(u,input_size=(3,224,224),batch_size=1,device="cpu")
-    t=torch.rand((1,3,572,572),dtype=torch.float32)
+    # summary(u,input_size=(3,224,224),batch_size=1,device="cpu")
+    t=torch.rand((1,3,576,576),dtype=torch.float32)
     out=u(t)
     print(out.shape)
