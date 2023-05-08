@@ -3,19 +3,19 @@ import numpy as np
 
 
 
-def bin(file,threshold):
+def binarize(file,threshold)->cv2.Mat:
         mat =cv2.imread(file)
 
         cv2.cvtColor(mat,cv2.COLOR_BGR2GRAY,mat)
 
         mat=cv2.threshold(mat,threshold,255)
-
+        return mat
 
 if __name__ =='__main__':
         file=r"C:\Users\denk\Pictures\微信图片_20230415115929.jpg"
         color_image = cv2.imread(file)
 
-# 将彩色图像转换为灰度图像
+        # 将彩色图像转换为灰度图像
         gray_image = cv2.cvtColor(color_image, cv2.COLOR_BGR2GRAY)
         cv2.imshow("gray",gray_image)
         

@@ -5,29 +5,18 @@ import torch
 
 import tqdm
 import torchvision.transforms as transforms
-from __init__ import _load_module
-_load_module("load_dataset")
-_load_module("module")
-from dataset import get_dataset
+from PIL import Image
 
 
 
-img_dir=r"E:\Dataset\图像分割\images"
-img_mask_dir=r"E:\Dataset\图像分割\masks"
-dataset= get_dataset(img_dir,img_mask_dir)
-# data_loader=dataset()
-def img_to_tensor(img)->torch.Tensor:
-    transform = transforms.ToTensor()
-    return transform(img)
-
-
-for idex,data in enumerate(dataset):
-    # print(idex,data[0].shape)
-    # t=img_to_tensor(data[1])
-    # img.convert()
-    # print(t.shape)
-    # break
-    img_bin=data[1].convert("1")
+# def __():
+#     for idex,data in enumerate(dataset):
+#         # print(idex,data[0].shape)
+#         # t=img_to_tensor(data[1])
+#         # img.convert()
+#         # print(t.shape)
+#         # break
+#         img_bin=data[1].convert("1")
     # print(img.size())
     # img.show()
     # break
@@ -40,4 +29,13 @@ for idex,data in enumerate(dataset):
 # print(f"count720={count720},count768={count768}")
 # count720=210,count768=254
 
-
+def open_img():
+    img=r"E:\Dataset\OneDrive_1_2022-11-18\rectified01\depth01\0000000000.png"
+    img=Image.open(img)
+    print(img.size)
+    # pixel=img.load()
+    for j in range(img.height):
+        for i in range(img.width):
+            print(img.getpixel((i,j)))
+    
+open_img()

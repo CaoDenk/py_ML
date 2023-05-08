@@ -17,12 +17,15 @@ if __name__=='__main__':
     # print(T.shape)
     # print(T)
     img_bgr,depth=get_img_and_depth(dir,dataset_no,1,"0000000012.jpg")
-
     
-    rgbd_to_pointcloud_with_gpu(img_bgr,depth,intrinsics_t,extrinsics_t,device=torch.device("cuda"))
+    narr=np.asarray(depth).astype(np.float32)
+    t=torch.from_numpy(narr)
+    max=t.max()
+    posList,rgbList=rgbd_to_pointcloud(img_bgr,depth,intrinsics_t,extrinsics_t)
+    save_pos(posList,"pos.txt")
     # pointcloud,rgb_collections=rgbd_to_pointcloud(img_bgr,depth,intrinsics_t,extrinsics_t)
     # save_pos(pointcloud,"python_pos.txt")
     # cv2.imshow("img",img_bgr)
-    # vtk_show_points(pointcloud,rgb_collections,True)
+    # vtk_show_points(posList,rgbList,True)
    
     # cv2.waitKey()

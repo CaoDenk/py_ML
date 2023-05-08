@@ -17,18 +17,22 @@ def load_config():
     # print(file)
     config = configparser.ConfigParser()
 
-# 读取配置文件
+    # 读取配置文件
     config.read(config_path)
 
     # 获取配置值
 
     file = config.get('img_seg', 'file')
 
+    is_depth=config.get('img_seg','is_depth')
     # 输出配置值
-
-    print(f'file: {file}')   
     
-load_config()
+    print(f'file: {file}')   
+    print(f'is_depth:{is_depth}')
+
+
+if __name__=="__main__": 
+    load_config()
 # print(__file__)
 
 # p=os.path.dirname(__file__)

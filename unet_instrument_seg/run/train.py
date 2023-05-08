@@ -33,9 +33,10 @@ def train(img_dir,img_mask_dir,epoch,device,net,batch_size=1):
     # u.to(dev)
     # optimizer = optim.RMSprop(net.parameters(), lr=0.00001, weight_decay=1e-8, momentum=0.9)
     optimizer=torch.optim.Adam(net.parameters(),lr=0.00001)
+    net.train()
     criterion = nn.BCEWithLogitsLoss()
     for i in range(epoch):
-        net.train()
+ 
         for data in tqdm(dataset):
             optimizer.zero_grad()
                       
@@ -43,7 +44,7 @@ def train(img_dir,img_mask_dir,epoch,device,net,batch_size=1):
             mask=data["mask"]
 
             mask=mask.to(device=device)
-            img=img.to(device=device,dtype=torch.float32)
+            img=img.to(device=device)
             
             img_pred=net(img)
      

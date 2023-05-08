@@ -21,7 +21,6 @@ def de_occ(img,mask):
     for i in range(h):
         for j in range(w):
             
-
             if array_mask[i,j]!=0:
                  array[i,j]=(0,0,0,0)
 

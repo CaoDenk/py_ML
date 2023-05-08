@@ -28,20 +28,22 @@ def read_pfm(filename):
         return np.flipud(np.reshape(decoded, shape)) * scale
 
 
-import matplotlib.pyplot as plt
-image = read_pfm(r'E:\Dataset\Compressed\Sampler.tar\Sampler\FlyingThings3D\disparity\0006.pfm')
-plt.imshow(image)
-plt.show()
 
-# mat =cv2.fromarray(image)
-# height,width =image.shape
+if __name__=="__main__":
+    import matplotlib.pyplot as plt
+    image = read_pfm(r'E:\Dataset\Compressed\Sampler.tar\Sampler\FlyingThings3D\disparity\0006.pfm')
+    plt.imshow(image)
+    plt.show()
 
-# for i in range(10):
-#     for j in range(10):
-#         print(image[i,j],end=" ")
-#     print()
+    # mat =cv2.fromarray(image)
+    # height,width =image.shape
 
-cv2.normalize(image,image)
-image =image*255
-cv2.imshow("mat",image)
-cv2.waitKey()
+    # for i in range(10):
+    #     for j in range(10):
+    #         print(image[i,j],end=" ")
+    #     print()
+
+    cv2.normalize(image,image)
+    image =image*255
+    cv2.imshow("mat",image)
+    cv2.waitKey()
