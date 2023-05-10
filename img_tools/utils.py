@@ -186,9 +186,21 @@ def create_mat(size,channels):
 # def match_img(img1,img2):
 #     Image.merge(img1,img2)
 """"
-@return 返回一个掩膜后的cv.Mat
+@return 返回一个掩膜后的Image
 @param 
-    img:torch.Tensor
+    img:Image
 """
-def do_mask(img:torch.Tensor,mask:torch.Tensor)->cv2.Mat:
-    ...
+def add_mask(img:Image,mask:Image,mask_color:tuple,alpha=0.7,beta=0.3):
+    rgba_img=img.convert("RGBA")
+    img_pixel=rgba_img.load()
+    mask_pixel=mask.load()
+    w,h=mask.size
+    
+    for i in range(w):
+        for j in range(h):
+            if mask_pixel[i,j]==0:
+                masked_color=tuple(int(_i*alpha+_j*beta) for _i,_j in zip(img_pixel[i,j],mask_color))
+                # print(type(masked_color))
+                img_pixel[i,j]=masked_color
+                
+    return rgba_img

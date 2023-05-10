@@ -10,9 +10,11 @@ import os
 
 _load_module("load_dataset")
 _load_module("module")
+_load_module("loss")
 
 from dataset import get_dataset
 from Unet import Unet
+from Tversky_loss import tversky_loss
 
 def img_to_tensor(img)->torch.Tensor:
     transform = transforms.ToTensor()
@@ -33,6 +35,7 @@ def train(img_dir,img_mask_dir,epoch,device,net,batch_size=1):
     # u.to(dev)
     # optimizer = optim.RMSprop(net.parameters(), lr=0.00001, weight_decay=1e-8, momentum=0.9)
     optimizer=torch.optim.Adam(net.parameters(),lr=0.00001)
+    optimizer.zero_grad()
     net.train()
     criterion = nn.BCEWithLogitsLoss()
     for i in range(epoch):
@@ -49,7 +52,7 @@ def train(img_dir,img_mask_dir,epoch,device,net,batch_size=1):
             img_pred=net(img)
      
             
-            loss=criterion(img_pred,mask)        
+            loss=tversky_loss(img_pred,mask)        
             loss.backward()
             
             optimizer.step()
