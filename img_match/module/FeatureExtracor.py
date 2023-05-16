@@ -60,7 +60,7 @@ def pos_encoding(x):
 
  
 if __name__=="__main__":
-    x=torch.rand((1,3,288,720),dtype=torch.float32)
+    x=torch.rand((1,3,288,500),dtype=torch.float32)
     
     fe=FeatureExtracor()
     x=fe(x)

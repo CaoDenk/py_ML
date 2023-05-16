@@ -1,7 +1,7 @@
 import vtk
 import cv2
 import torch
-from rgbd_to_pointcloud import save_pos,rgbd_to_pointcloud_with_gpu
+from rgbd_to_pointcloud import save_pos
 from camera_args import load_camera_args
 from load_img import get_img_and_depth
 from rgbd_to_pointcloud import rgbd_to_pointcloud
@@ -22,10 +22,10 @@ if __name__=='__main__':
     t=torch.from_numpy(narr)
     max=t.max()
     posList,rgbList=rgbd_to_pointcloud(img_bgr,depth,intrinsics_t,extrinsics_t)
-    save_pos(posList,"pos.txt")
+    # save_pos(posList,"pos.txt")
     # pointcloud,rgb_collections=rgbd_to_pointcloud(img_bgr,depth,intrinsics_t,extrinsics_t)
     # save_pos(pointcloud,"python_pos.txt")
     # cv2.imshow("img",img_bgr)
-    # vtk_show_points(posList,rgbList,True)
+    vtk_show_points(posList,rgbList,True)
    
     # cv2.waitKey()
