@@ -3,8 +3,8 @@ import torch
 from UpSample import UpSample
 from DownSample import DownSample
 
-from torchsummary import summary
 
+from torchviz import make_dot
 
 
 class Unet(nn.Module):
@@ -30,4 +30,7 @@ if __name__ =='__main__':
     # summary(u,input_size=(3,224,224),batch_size=1,device="cpu")
     t=torch.rand((1,3,576,576),dtype=torch.float32)
     out=u(t)
-    print(out.shape)
+    dot = make_dot(out, params=dict(u.named_parameters()))
+
+    # 保存计算图为PDF文件
+    dot.render('net')

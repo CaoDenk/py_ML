@@ -7,7 +7,7 @@ from torch import nn, Tensor
 
 from get_activation import _get_activation_fn
 
-class TransformerEncoderlayer(nn.Module):
+class TransformerDecoderlayer(nn.Module):
     def __init__(self,
                  d_model,
                  nhead,
@@ -23,4 +23,32 @@ class TransformerEncoderlayer(nn.Module):
         
         self.linear2=nn.Linear(dim_feedforward,d_model)
         
-        
+        self.norm1=nn.LayerNorm(d_model)
+        self.norm2=nn.LayerNorm(d_model)
+        self.norm3=nn.LayerNorm(d_model)
+        self.dropout1 = nn.Dropout(dropout)
+        self.dropout2 = nn.Dropout(dropout)
+        self.dropout3 = nn.Dropout(dropout)
+
+        self.activation = _get_activation_fn(activation)
+
+    def with_pos_embed(self, tensor, pos: Optional[Tensor]):
+        return tensor if pos is None else tensor + pos
+
+    def forward(self, tgt, memory,
+                tgt_mask: Optional[Tensor] = None,
+                memory_mask: Optional[Tensor] = None,
+                tgt_key_padding_mask: Optional[Tensor] = None,
+                memory_key_padding_mask: Optional[Tensor] = None,
+                pos: Optional[Tensor] = None,
+                query_pos: Optional[Tensor] = None):
+        tgt2 = self.multihead_attn(query=self.with_pos_embed(tgt, query_pos),
+                                   key=self.with_pos_embed(memory, pos),
+                                   value=memory, attn_mask=memory_mask,
+                                   key_padding_mask=memory_key_padding_mask)[0]
+        tgt = tgt + self.dropout2(tgt2)
+        tgt = self.norm2(tgt)
+        tgt2 = self.linear2(self.dropout(self.activation(self.linear1(tgt))))
+        tgt = tgt + self.dropout3(tgt2)
+        tgt = self.norm3(tgt)
+        return tgt       
