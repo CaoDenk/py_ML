@@ -32,3 +32,5 @@ class MyNet(nn.Module):
         return out
     
     
+if __name__=='__main__':
+    ...

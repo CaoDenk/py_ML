@@ -3,22 +3,18 @@ import random
 import torch
 import numpy as np
 
-from __init__ import _load_module
-_load_module("dataset")
-_load_module("utilities")
-_load_module("module")
-# from utilities.train_one_epoch import train_one_epoch
-# from train_one_epoch import train_one_epoch
-
-from MyDataset import MyDataset
-
-from train_one_epoch import train_one_epoch
-from loss import build_criterion
-from sttr import STTR
 
 from torch.utils.data import dataloader
+from tqdm import tqdm
+
+from misc import NestedTensor
+import torch.nn.functional as F
 from loguru import logger
-from eval import myeval
+
+from __init__ import _load_module
+
+_load_module("dataset")
+from MyDataset import MyDataset
 
 def get_args_parser():
     """
@@ -87,7 +83,7 @@ def get_args_parser():
 
     return parser
 
-def main(args):
+def main(args,model,log,epoch):
     # get device
     device = torch.device(args.device)
 
@@ -96,58 +92,70 @@ def main(args):
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
-    index=187
     # data_loader_train, data_loader_val, _ = build_data_loader(args)
-    left_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\image01"
-    right_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\image02"
-    disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\disp_np01"
-    right_disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\disp_np02"
+    left_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\image01"
+    right_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\image02"
+    disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\disp_np01"
+    right_disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\disp_np02"
     train_dataset=MyDataset(left_dir,right_dir,disp_dir,right_disp_dir)
     train_loader = dataloader.DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=args.num_workers)
-    model = STTR(args).to(device)
-    # model=torch.load(rf"E:\中期\sttr_light\stereo-transformer\sttr_train {index}.pth")
+    # model=torch.load(r"E:\中期\sttr_light\stereo-transformer\sttr_train 177.pth")
+    
+    fx=417.9036255
+    baseline=5.2864
+    fb=fx*baseline
+    
+    depth_mae_loss_sum=0
+    disp_mae_loss_sum=0
+    three_3px_loss_sum=0
+    i=0
+    for data in tqdm(train_loader):
+        left, right = data['left'].to(device), data['right'].to(device)
+        disp, occ_mask, occ_mask_right = data['disp'].to(device), data['occ_mask'].to(device), \
+                                        data['occ_mask_right'].to(device)
 
-    param_dicts = [
-            {"params": [p for n, p in model.named_parameters() if
-                        "backbone" not in n and "regression" not in n and p.requires_grad]},
-            {
-                "params": [p for n, p in model.named_parameters() if "backbone" in n and p.requires_grad],
-                "lr": args.lr_backbone,
-            },
-            {
-                "params": [p for n, p in model.named_parameters() if "regression" in n and p.requires_grad],
-                "lr": args.lr_regression,
-            },
-        ]
-    # build loss criterion
-    criterion = build_criterion(args)
-    optimizer = torch.optim.AdamW(param_dicts, lr=args.lr, weight_decay=args.weight_decay)
-    lr_scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer, gamma=args.lr_decay_rate)
+        bs, _, h, w = left.size()
 
+        # build the input
+        inputs = NestedTensor(left, right, disp=disp, occ_mask=occ_mask, occ_mask_right=occ_mask_right)
+
+        # forward pass
+        outputs = model(inputs)
+        pred_disp=outputs["disp_pred"]
+        
+        pred_disp.unsqueeze_(0)
+        
+        disp=data["disp"].to(device)
+        mask=disp>0
+        disp_mae_loss=F.l1_loss(disp[mask],pred_disp[mask]).item()
+        
+        disp_mae_loss_sum+=disp_mae_loss
+        
+        
+        depth=fb/disp[mask]
+        pred_depth=fb/pred_disp[mask]
+        
+        depth_mae_loss=F.l1_loss(depth,pred_depth).item()
+        
+        depth_mae_loss_sum+=depth_mae_loss
+        
+        abs=torch.abs(disp[mask]-pred_disp[mask])
+        
+        three_3px_loss=torch.sum(abs>3)/disp[mask].shape[0]
+        three_3px_loss_sum+=three_3px_loss
+        # print(f"disp mae{disp_mae_loss}  depth mae loss {depth_mae_loss} 3px {three_3px_loss}")
+        # break
+        i+=1
+    
+    print(f"avg:disp maeloss {disp_mae_loss_sum/i}  depth mae loss {depth_mae_loss_sum/i} 3px {three_3px_loss_sum/i}")
     # build model
-
-    print("Start training")
-    logger.add("eval.log")
-    for epoch in range(args.start_epoch, args.epochs):
-        # train
-        print("Epoch: %d" % epoch)
-        train_one_epoch(model, train_loader, optimizer, criterion, device, epoch,
-                        args.clip_max_norm, None)
-
-        # step lr if not pretraining
-        if not args.pre_train:
-            lr_scheduler.step()
-            print("current learning rate", lr_scheduler.get_lr())
-
-        # empty cache
-        # torch.cuda.empty_cache()
-        myeval(model,logger,epoch=index)
-        index +=1
-        torch.save(model,f"sttr_train {index}.pth")
+    logger.info(f"epoch={epoch} avg:disp maeloss {disp_mae_loss_sum/i}  depth mae loss {depth_mae_loss_sum/i} 3px {three_3px_loss_sum/i}")
 
 
-    return
-
+def myeval(model,log,epoch):
+    ap = argparse.ArgumentParser('STTR training and evaluation script', parents=[get_args_parser()])
+    args_ = ap.parse_args()
+    main(args_,model,log,epoch)
 
 if __name__=='__main__':
     ap = argparse.ArgumentParser('STTR training and evaluation script', parents=[get_args_parser()])

@@ -59,4 +59,4 @@ if __name__=='__main__':
     mask=torch.rand((1,16,32))
     query_embed=torch.rand((512,1,256))
     pos_embed=torch.rand((1,256,16,32))
-    trans(src,mask,query_embed,pos_embed)
+    t=trans(src,mask,query_embed,pos_embed)
