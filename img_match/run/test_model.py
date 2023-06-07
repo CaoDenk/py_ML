@@ -6,7 +6,7 @@ import MyDataset
 from dataset import build_data_loader
 from module.loss import build_criterion
 from module.sttr import STTR
-from train_one_epoch2 import train_one_epoch2
+
 from torch.utils.data import dataloader
 from tqdm import tqdm
 

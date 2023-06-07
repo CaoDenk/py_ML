@@ -47,7 +47,7 @@ class PositionEncodingSine1DRelative(nn.Module):
 
         pos_x = x_embed[:, None] / dim_t  # 2W-1xC
         # interleave cos and sin instead of concatenate
-        pos = torch.stack((pos_x[:, 0::2].sin(), pos_x[:, 1::2].cos()), dim=2).flatten(1) *1.2 # 2W-1xC  
+        pos = torch.stack((pos_x[:, 0::2].sin(), pos_x[:, 1::2].cos()), dim=2).flatten(1) # 2W-1xC  
 
         return pos
 

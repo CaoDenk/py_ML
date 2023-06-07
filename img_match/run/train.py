@@ -96,7 +96,7 @@ def main(args):
     torch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
-    index=187
+    index=0
     # data_loader_train, data_loader_val, _ = build_data_loader(args)
     left_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\image01"
     right_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\image02"
@@ -105,7 +105,7 @@ def main(args):
     train_dataset=MyDataset(left_dir,right_dir,disp_dir,right_disp_dir)
     train_loader = dataloader.DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=args.num_workers)
     model = STTR(args).to(device)
-    # model=torch.load(rf"E:\中期\sttr_light\stereo-transformer\sttr_train {index}.pth")
+    # model=torch.load(rf"sttr_train {index}.pth")
 
     param_dicts = [
             {"params": [p for n, p in model.named_parameters() if
