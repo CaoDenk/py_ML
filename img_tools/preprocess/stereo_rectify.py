@@ -12,19 +12,30 @@ def rectify(frame_parameter_file, left_raw, right_raw):
         data = json.load(para_json_file)
         camera_parameter = data['camera-calibration']
 
-        l_camera_matrix = np.array(camera_parameter['KL'])
-        r_camera_matrix = np.array(camera_parameter['KR'])
-        l_dist_coeff = np.array(camera_parameter['DL'])
-        r_dist_coeff = np.array(camera_parameter['DR'])
+        l_camera_matrix = np.array(camera_parameter['KL']) #左内参矩阵
+        r_camera_matrix = np.array(camera_parameter['KR'])#由内参
+        l_dist_coeff = np.array(camera_parameter['DL']) #左畸变系数（径向和切向）
+        r_dist_coeff = np.array(camera_parameter['DR']) #右畸变系数（径向和切向）
         rotation = np.array(camera_parameter['R'])
         translation = np.reshape(np.array(camera_parameter['T']),(3,1))
 
         img_size = left_raw.shape[1::-1]
         print(img_size)
 
+        #？
+        R1, R2, P1, P2, Q, ROI_l, ROI_r = cv2.stereoRectify(l_camera_matrix, l_dist_coeff, r_camera_matrix, r_dist_coeff, img_size, rotation, translation) 
+        """
+        R1: 3x3的校正旋转矩阵，将未校正的左目图像坐标变换到校正后的左目图像坐标
+        R2: 3x3的校正旋转矩阵，将未校正的右目图像坐标变换到校正后的右目图像坐标
+        P1: 3x4的投影矩阵，将校正后的左目图像坐标投影到图像平面坐标
+        P2: 3x4的投影矩阵，将校正后的右目图像坐标投影到图像平面坐标
+        Q: 4x4的视差深度映射矩阵，用于从视差图计算三维点坐标
+        ROI_l: 一个最多地包含有效像素的长方形，用于裁剪校正后的左目图像
+        ROI_r: 一个最多地包含有效像素的长方形，用于裁剪校正后的右目图像
+        投影矩阵3*4是一个用于将三维空间中的点投影到二维平面上的矩阵，它可以表示为12：
 
-        R1, R2, P1, P2, Q, ROI_l, ROI_r = cv2.stereoRectify(l_camera_matrix, l_dist_coeff, r_camera_matrix, r_dist_coeff, img_size, rotation, translation)
-
+        
+        """
         mapLx, mapLy = cv2.initUndistortRectifyMap(l_camera_matrix, l_dist_coeff, R1, P1, img_size, cv2.CV_32F)
         mapRx, mapRy = cv2.initUndistortRectifyMap(r_camera_matrix, r_dist_coeff, R2, P2, img_size, cv2.CV_32F)
 

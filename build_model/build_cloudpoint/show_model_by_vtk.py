@@ -6,18 +6,18 @@ from load_img import get_img_and_depth
 
 from camera_args import load_camera_args
 
-def vtk_show_points(l,rgb_colls,is_same_to_img:bool):
+def vtk_show_points(l,rgb_colls,is_same_to_img:bool=False):
     
     points = vtk.vtkPoints()
     if is_same_to_img:       
         for i in l:
-            points.InsertNextPoint(i[1],i[0],i[2])
-           
+            points.InsertNextPoint(i[1],i[0],i[2])          
     else:
         for i in l:
             points.InsertNextPoint(i[0],i[1],i[2])
     colors = vtk.vtkUnsignedCharArray()
     colors.SetNumberOfComponents(3)
+
     for r in rgb_colls:
         colors.InsertNextTuple3(r[0],r[1],r[2])
     # 创建vtkPolyData对象，并设置其点集和颜色为上面创建的vtkPoints对象和vtkUnsignedCharArray对象

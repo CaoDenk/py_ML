@@ -135,7 +135,8 @@ def fusion_frame(camera_filepath, scene_filepath, current_frame, forward_frame_n
 
 
 def main():
-    rootpath = '/media/xiran_zhang/TOSHIBA EXT/MICCAI_SCARED/dataset3'
+    # rootpath = '/media/xiran_zhang/TOSHIBA EXT/MICCAI_SCARED/dataset3'
+    rootpath = 'E:/2019/dataset_3'
     camera_filepath = join(rootpath, 'keyframe_1/data/frame_data')
     scene_filepath = join(rootpath, 'keyframe_1/data/scene_points')
 

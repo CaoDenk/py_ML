@@ -6,7 +6,7 @@ import numpy as np
 from __init__ import _load_module
 _load_module("dataset")
 
-from MyDataset import MyDataset
+from ScaredDataset import ScaredDataset
 
 _load_module("utilities")
 _load_module("module")
@@ -21,7 +21,7 @@ from sttr import STTR
 
 from torch.utils.data import dataloader
 from loguru import logger
-from eval import myeval
+from eval_scared import myeval_sacred
 
 def get_args_parser():
     """
@@ -38,7 +38,7 @@ def get_args_parser():
     parser.add_argument('--epochs', default=300, type=int)
     parser.add_argument('--clip_max_norm', default=0.1, type=float,
                         help='gradient clipping max norm')
-    parser.add_argument('--device', default='cuda',
+    parser.add_argument('--device', default='cpu',
                         help='device to use for training / testing')
     parser.add_argument('--seed', default=42, type=int)
     parser.add_argument('--resume', default='', help='resume from checkpoint')
@@ -101,11 +101,11 @@ def main(args):
     random.seed(seed)
     index=0
     # data_loader_train, data_loader_val, _ = build_data_loader(args)
-    left_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\image01"
-    right_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\image02"
-    disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\disp_np01"
-    right_disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\train\disp_np02"
-    train_dataset=MyDataset(left_dir,right_dir,disp_dir,right_disp_dir)
+    left_dir=r"E:\2019\dataset_3\keyframe_2\data\left_finalpass"
+    right_dir=r"E:\2019\dataset_3\keyframe_2\data\right_finalpass"
+    disp_dir=r"E:\2019\dataset_3\keyframe_2\data\disparity"
+
+    train_dataset=ScaredDataset(left_dir,right_dir,disp_dir)
     train_loader = dataloader.DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=args.num_workers)
     model = STTR(args).to(device)
     # model=torch.load(rf"sttr_train {index}.pth")
@@ -130,7 +130,7 @@ def main(args):
     # build model
 
     print("Start training")
-    logger.add("eval.log")
+    logger.add("eval_scared.log")
     for epoch in range(args.start_epoch, args.epochs):
         # train
         print("Epoch: %d" % epoch)
@@ -144,7 +144,7 @@ def main(args):
 
         # empty cache
         # torch.cuda.empty_cache()
-        myeval(model,logger,epoch=index)
+        myeval_sacred(model,logger,epoch=index)
         index +=1
         torch.save(model,f"sttr_train {index}.pth")
 

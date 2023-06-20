@@ -10,6 +10,6 @@ rootpath = 'E:/2019/dataset_3'
 
 # image_scissor(rootpath)
 
-# stereo_rectify(rootpath)
+stereo_rectify(rootpath)
 
 depth_to_disparity(rootpath)

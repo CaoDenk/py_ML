@@ -14,7 +14,7 @@ from loguru import logger
 from __init__ import _load_module
 
 _load_module("dataset")
-from MyDataset import MyDataset
+from ScaredDataset import ScaredDataset
 
 def get_args_parser():
     """
@@ -96,8 +96,8 @@ def main(args,model,log,epoch):
     left_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\image01"
     right_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\image02"
     disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\disp_np01"
-    right_disp_dir=r"E:\Dataset\endo_depth\22_crop_288_496\val\disp_np02"
-    train_dataset=MyDataset(left_dir,right_dir,disp_dir,right_disp_dir)
+
+    train_dataset=ScaredDataset(left_dir,right_dir,disp_dir)
     train_loader = dataloader.DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=args.num_workers)
     # model=torch.load(r"E:\中期\sttr_light\stereo-transformer\sttr_train 177.pth")
     
